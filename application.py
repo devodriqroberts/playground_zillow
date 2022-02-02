@@ -157,69 +157,69 @@ def main():
     ######################### Choose Spider #########################
 
     lbl_choose_spider = Label(master=window, text="Choose a Spider", padx=PADDING, pady=PADDING)
-    lbl_choose_spider.place(x=GEOMETRY_WIDTH*0.02, y=GEOMETRY_WIDTH*0.02)
+    lbl_choose_spider.grid(row=0, column=0, sticky=W)
 
     choose_spider_text = StringVar(master=window)
     choose_spider_text.set("Select Spider".center(10))
     spiders = get_spiders()
     opt_select_spider = OptionMenu(window, choose_spider_text, *spiders)
-    opt_select_spider.place(x=GEOMETRY_WIDTH*0.35, y=GEOMETRY_WIDTH*0.04, width=130)
+    opt_select_spider.grid(row=0, column=1)
 
 
     ######################### Feed Type #########################
 
     lbl_choose_feed = Label(master=window, text="Choose Export Type", padx=PADDING, pady=PADDING)
-    lbl_choose_feed.place(x=GEOMETRY_WIDTH*0.02, y=GEOMETRY_WIDTH*0.10)
+    lbl_choose_feed.grid(row=1, column=0, sticky=W)
 
     choose_feed_text = StringVar(master=window)
     choose_feed_text.set("Select Option".center(10))
     feed_types = FEED_TYPES
 
     opt_select_feed = OptionMenu(window, choose_feed_text, *feed_types)
-    opt_select_feed.place(x=GEOMETRY_WIDTH*0.35, y=GEOMETRY_WIDTH*0.12, width=130)
+    opt_select_feed.grid(row=1, column=1)
 
 
     ######################### Local Path Entry #########################
 
     lbl_local_file_path = Label(master=window, text="Local File Path", padx=PADDING, pady=PADDING)
-    lbl_local_file_path.place(x=GEOMETRY_WIDTH*0.02, y=GEOMETRY_WIDTH*0.18)
+    lbl_local_file_path.grid(row=2, column=0, sticky=W)
 
     local_file_path_text = StringVar(window)
-    ent_local_file_path = Entry(window, textvariable=local_file_path_text, width=17)
-    ent_local_file_path.place(x=GEOMETRY_WIDTH*0.35, y=GEOMETRY_WIDTH*0.20)
+    ent_local_file_path = Entry(window, textvariable=local_file_path_text)
+    ent_local_file_path.grid(row=2, column=1)
 
     btn_browse = Button(window, text="Browse", command=browse_btn)
-    btn_browse.place(x=GEOMETRY_WIDTH*0.71, y=GEOMETRY_WIDTH*0.20)
+    btn_browse.grid(row=2, column=2)
 
 
     ######################### Local File Name #########################
 
     lbl_local_file_name = Label(master=window, text="Local File Name", padx=PADDING, pady=PADDING)
-    lbl_local_file_name.place(x=GEOMETRY_WIDTH*0.02, y=GEOMETRY_WIDTH*0.26)
+    lbl_local_file_name.grid(row=3, column=0, sticky=W)
 
     local_file_name_text = StringVar(window)
-    ent_file_name = Entry(window, textvariable=local_file_name_text, width=17)
-    ent_file_name.place(x=GEOMETRY_WIDTH*0.35, y=GEOMETRY_WIDTH*0.28)
+    ent_file_name = Entry(window, textvariable=local_file_name_text)
+    ent_file_name.grid(row=3, column=1)
 
     include_datetime_checked = IntVar()
     include_datetime = Checkbutton(window, text='Add Timestamp?',variable=include_datetime_checked, onvalue=1, offvalue=0)
-    include_datetime.place(x=GEOMETRY_WIDTH*0.71, y=GEOMETRY_WIDTH*0.285)
+    include_datetime.grid(row=3, column=2)
     include_datetime.select()
 
 
     ######################### Execute Button #########################
 
-    btn_execute = Button(window, text="RUN", padx=PADDING*2, pady=PADDING*0.4, command=lambda: start_execute_thread(None))
-    btn_execute.place(x=GEOMETRY_WIDTH*0.45, y=GEOMETRY_WIDTH*0.37)
+    btn_execute = Button(window, text="RUN", padx=PADDING*2, pady=PADDING*0.5, command=lambda: start_execute_thread(None))
+    btn_execute.grid(row=4, column=1, pady=PADDING)
 
 
     ######################### Progress Bar #########################
 
-    progress_bar=ttk.Progressbar(window,orient=HORIZONTAL,length=250,mode='determinate')
-    progress_bar.place(x=GEOMETRY_WIDTH*0.25, y=GEOMETRY_WIDTH*0.47)
+    progress_bar=ttk.Progressbar(window,orient=HORIZONTAL, length=150, mode='determinate')
+    progress_bar.grid(row=5, column=1)
 
-    lbl_progress = Label(master=window, text="*Window will close upon crawl completion*", font=("Ariel 10"))
-    lbl_progress.place(x=GEOMETRY_WIDTH*0.25, y=GEOMETRY_WIDTH*0.53)
+    lbl_progress = Label(master=window, text="*Window will close when complete*", font=("Ariel 10"), pady=PADDING)
+    lbl_progress.grid(row=6, column=1)
 
 
 
