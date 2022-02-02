@@ -12,8 +12,6 @@ import os
 
 
 def main():
-    absolute_path = os.path.abspath(".")
-    print("Full path from Application: " + absolute_path)
     settings = get_project_settings()
     FEED_TYPES = ["CSV", "JSON", "XML"]
 
