@@ -3,16 +3,22 @@ import scrapy
 from itemloaders import ItemLoader
 from ..utils import URL, parse_cookies, parse_new_url
 from ..items import ZillowItem
+from scrapy.utils.project import get_project_settings
 
 
 
 class HousesSpider(scrapy.Spider):
     name = 'houses'
     allowed_domains = ['www.zillow.com']
+    settings = get_project_settings()
+    ZILLOW_CITIES_DICT = settings["ZILLOW_CITIES_DICT"]
+    ZILLOW_CITY_URL = None
+
 
     def start_requests(self):
+        self.ZILLOW_CITY_URL = self.ZILLOW_CITIES_DICT[self.settings.get("ZILLOW_SELECTED_CITY", "Atlanta")]
         yield scrapy.Request(
-            url=URL,
+            url=self.ZILLOW_CITY_URL,
             cookies=parse_cookies(),
             meta={
                 "current_page": 1
@@ -52,12 +58,12 @@ class HousesSpider(scrapy.Spider):
             yield loader.load_item()
 
 
-        # if current_page <= total_pages:
-        #     current_page += 1
-        #     yield scrapy.Request(
-        #         url=parse_new_url(URL, current_page),
-        #         cookies=parse_cookies(),
-        #         meta={
-        #             "current_page": current_page
-        #             }
-        #     )
+        if current_page <= total_pages:
+            current_page += 1
+            yield scrapy.Request(
+                url=parse_new_url(self.ZILLOW_CITY_URL, current_page),
+                cookies=parse_cookies(),
+                meta={
+                    "current_page": current_page
+                    }
+            )

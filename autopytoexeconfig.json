@@ -67,15 +67,55 @@
   },
   {
    "optionDest": "datas",
-   "value": "/Users/devodriqroberts/Freelance/Webscraping/Playground/zillow/zillow:zillow/"
-  },
-  {
-   "optionDest": "datas",
-   "value": "/Users/devodriqroberts/Freelance/Webscraping/Playground/zillow/scrapy.cfg:."
+   "value": "/Users/devodriqroberts/Freelance/Webscraping/Playground/zillow:."
   },
   {
    "optionDest": "pathex",
    "value": "/Users/devodriqroberts/Freelance/Webscraping/Playground/zillow"
+  },
+  {
+   "optionDest": "pathex",
+   "value": "/Users/devodriqroberts/Freelance/Webscraping/Playground/zillow/zillow"
+  },
+  {
+   "optionDest": "pathex",
+   "value": "/Users/devodriqroberts/Freelance/Webscraping/Playground/zillow/zillow/spiders"
+  },
+  {
+   "optionDest": "collect_submodules",
+   "value": "scrapy"
+  },
+  {
+   "optionDest": "collect_submodules",
+   "value": "scrapy.pipelines"
+  },
+  {
+   "optionDest": "collect_submodules",
+   "value": "scrapy.extensions"
+  },
+  {
+   "optionDest": "collect_submodules",
+   "value": "scrapy.utils"
+  },
+  {
+   "optionDest": "collect_data",
+   "value": "scrapy"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "scrapy"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "scrapy.pipelines"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "scrapy.extensions"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "scrapy.utils"
   }
  ],
  "nonPyinstallerOptions": {

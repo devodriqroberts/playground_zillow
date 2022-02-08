@@ -8,7 +8,6 @@ from scrapy.utils.project import get_project_settings
 from twisted.internet import reactor
 import threading
 import time
-import os
 
 
 def main():
@@ -25,7 +24,7 @@ def main():
 
     APP_TITLE = f"{settings['BOT_NAME'].replace('_', ' ').title()} Scraper"
     GEOMETRY_WIDTH = 480
-    GEOMETRY_HEIGHT = int(GEOMETRY_WIDTH*0.60)
+    GEOMETRY_HEIGHT = int(GEOMETRY_WIDTH*0.70)
     PADDING = GEOMETRY_WIDTH*0.02
 
     window = Tk()
@@ -42,6 +41,15 @@ def main():
         spider_loader = spiderloader.SpiderLoader.from_settings(settings)
         spiders_list = [spider for spider in spider_loader.list()]
         return spiders_list
+
+    def get_cities():
+        """Loads Scraper Cities From Project Settings
+
+        Returns:
+            list: List of all Cities found in project.
+        """
+        cities_list = sorted([city for city in settings.get("ZILLOW_CITIES_DICT").keys()])
+        return cities_list
 
     def browse_btn():
         """Gets file path from user input.
@@ -63,12 +71,13 @@ def main():
         """
         FEEDS = {}
         chosen_spider = choose_spider_text.get()
+        chosen_city = choose_city_text.get()
         chosen_feed = choose_feed_text.get()
         file_path = ent_local_file_path.get()
         file_name = ent_file_name.get()
         include_datetime = include_datetime_checked.get()
 
-        if file_path == "" or file_name == "" or chosen_feed not in FEED_TYPES:
+        if file_path == "" or file_name == "" or chosen_feed not in FEED_TYPES or chosen_city not in get_cities():
             messagebox.showerror("Error", "Please be sure to complete all fields.")
             return
 
@@ -111,6 +120,7 @@ def main():
 
 
         settings.set("FEEDS", FEEDS)
+        settings.set("ZILLOW_SELECTED_CITY", chosen_city)
         configure_logging()
 
         runner = CrawlerRunner(settings)
@@ -164,60 +174,72 @@ def main():
     opt_select_spider.grid(row=0, column=1)
 
 
+    ######################### Choose City #########################
+
+    lbl_choose_city = Label(master=window, text="Choose a City", padx=PADDING, pady=PADDING)
+    lbl_choose_city.grid(row=1, column=0, sticky=W)
+
+    choose_city_text = StringVar(master=window)
+    choose_city_text.set("Select City".center(10))
+    cities = get_cities()
+    opt_select_spider = OptionMenu(window, choose_city_text, *cities)
+    opt_select_spider.grid(row=1, column=1)
+
+
     ######################### Feed Type #########################
 
     lbl_choose_feed = Label(master=window, text="Choose Export Type", padx=PADDING, pady=PADDING)
-    lbl_choose_feed.grid(row=1, column=0, sticky=W)
+    lbl_choose_feed.grid(row=2, column=0, sticky=W)
 
     choose_feed_text = StringVar(master=window)
     choose_feed_text.set("Select Option".center(10))
     feed_types = FEED_TYPES
 
     opt_select_feed = OptionMenu(window, choose_feed_text, *feed_types)
-    opt_select_feed.grid(row=1, column=1)
+    opt_select_feed.grid(row=2, column=1)
 
 
     ######################### Local Path Entry #########################
 
     lbl_local_file_path = Label(master=window, text="Local File Path", padx=PADDING, pady=PADDING)
-    lbl_local_file_path.grid(row=2, column=0, sticky=W)
+    lbl_local_file_path.grid(row=3, column=0, sticky=W)
 
     local_file_path_text = StringVar(window)
     ent_local_file_path = Entry(window, textvariable=local_file_path_text)
-    ent_local_file_path.grid(row=2, column=1)
+    ent_local_file_path.grid(row=3, column=1)
 
     btn_browse = Button(window, text="Browse", command=browse_btn)
-    btn_browse.grid(row=2, column=2)
+    btn_browse.grid(row=3, column=2)
 
 
     ######################### Local File Name #########################
 
     lbl_local_file_name = Label(master=window, text="Local File Name", padx=PADDING, pady=PADDING)
-    lbl_local_file_name.grid(row=3, column=0, sticky=W)
+    lbl_local_file_name.grid(row=4, column=0, sticky=W)
 
     local_file_name_text = StringVar(window)
     ent_file_name = Entry(window, textvariable=local_file_name_text)
-    ent_file_name.grid(row=3, column=1)
+    ent_file_name.grid(row=4, column=1)
 
     include_datetime_checked = IntVar()
     include_datetime = Checkbutton(window, text='Add Timestamp?',variable=include_datetime_checked, onvalue=1, offvalue=0)
-    include_datetime.grid(row=3, column=2)
+    include_datetime.grid(row=4, column=2)
     include_datetime.select()
 
 
     ######################### Execute Button #########################
 
     btn_execute = Button(window, text="RUN", padx=PADDING*2, pady=PADDING*0.5, command=lambda: start_execute_thread(None))
-    btn_execute.grid(row=4, column=1, pady=PADDING)
+    btn_execute.grid(row=5, column=1, pady=PADDING)
 
 
     ######################### Progress Bar #########################
 
     progress_bar=ttk.Progressbar(window,orient=HORIZONTAL, length=150, mode='determinate')
-    progress_bar.grid(row=5, column=1)
+    progress_bar.grid(row=6, column=1)
 
     lbl_progress = Label(master=window, text="*Window will close when complete*", font=("Ariel 10"), pady=PADDING)
-    lbl_progress.grid(row=6, column=1)
+    lbl_progress.grid(row=7, column=1)
 
 
 

@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- CSS only -->
+    <!-- BS 4.6.1 -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css"
+      integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn"
+      crossorigin="anonymous"
+    />
+    <!-- BS Table -->
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"
+      integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/bootstrap-table@1.19.1/dist/bootstrap-table.min.css"
+    />
+    <!-- Title -->
+    <title>Zillow Houses</title>
+  </head>
+  <body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="#">Zillow Scraper</a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="#">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Data Dictionary</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    <!-- Navbar End -->
+
+    <div class="container">
+
+      <!-- Jumbotron -->
+      <div class="jumbotron mt-4" style="text-align: center">
+        <h1 class="display-4">Zillow Homes</h1>
+        <p class="lead">
+          The homes below are all scraped from zillow using Scrapy.
+        </p>
+      </div>
+      <!-- Jumbotron End -->
+
+      <script src="https://cdn.jsdelivr.net/npm/jquery/dist/jquery.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+      <script
+        src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"
+      ></script>
+      <script src="https://unpkg.com/bootstrap-table@1.19.1/dist/bootstrap-table.min.js"></script>
+
+      <script src="https://cdn.jsdelivr.net/npm/tableexport.jquery.plugin@1.10.21/tableExport.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/tableexport.jquery.plugin@1.10.21/libs/jsPDF/jspdf.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/tableexport.jquery.plugin@1.10.21/libs/jsPDF-AutoTable/jspdf.plugin.autotable.js"></script>
+      <script src="https://unpkg.com/bootstrap-table@1.19.1/dist/extensions/export/bootstrap-table-export.min.js"></script>
+
+      <style>
+        .select,
+        #locale {
+          width: 100%;
+        }
+        .like {
+          margin-right: 10px;
+        }
+      </style>
+
+      <div id="toolbar">
+        <div class="btn-group" role="group">
+          <!-- <button id="remove" class="btn btn-danger" disabled>
+            <i class="fa fa-trash"></i> Delete
+          </button> -->
+          <button id="refresh" type="button" class="btn btn-secondary">
+            <i class="fas fa-sync"></i> Refresh
+          </button>
+        </div>
+      </div>
+
+
+      <!-- <table
+        id="table"
+        data-toolbar="#toolbar"
+        data-show-refresh="true"
+        data-show-toggle="true"
+        data-show-fullscreen="true"
+        data-show-columns="true"
+        data-show-columns-toggle-all="true"
+        data-detail-view="true"
+        data-show-export="true"
+        data-click-to-select="true"
+        data-detail-formatter="detailFormatter"
+        data-minimum-count-columns="2"
+        data-id-field="id"
+        data-show-footer="true"
+        data-url="http://127.0.0.1:5000/data"
+        data-response-handler="responseHandler"
+      ></table> -->
+
+      <table 
+        id="table"
+        data-toolbar="#toolbar"
+        data-show-toggle="true"
+        data-show-fullscreen="true"
+        data-show-columns="true"
+        data-show-columns-toggle-all="true"
+        data-detail-view="true"
+        data-show-export="true"
+        data-click-to-select="true"
+        data-detail-formatter="detailFormatter"
+        data-minimum-count-columns="2"
+        data-id-field="id"
+        data-show-footer="true"
+        data-response-handler="responseHandler">
+        <thead>
+          <tr>
+            {% for col in columns %}
+              <th data-field={{col}} data-title={{col}} data-sortable="true" data-align="center" data-valign="middle">ID</th>
+            {% endfor %}
+            <!-- <th data-field="name" data-title="Name" data-sortable="true" data-align="center" data-valign="middle">Item Name</th>
+            <th data-field="price" data-title="Price" data-sortable="true" data-align="center" data-valign="middle">Item Price</th> -->
+          </tr>
+        </thead>
+      </table>
+      
+      <script>
+
+        $(function(data) {
+          $('#table').bootstrapTable({data: data})
+        })
+      </script>
+
+      <!-- <script>
+        var $table = $("#table");
+        var $remove = $("#remove");
+        var selections = [];
+
+        function getIdSelections() {
+          return $.map($table.bootstrapTable("getSelections"), function (row) {
+            return row.houseId;
+          });
+        }
+
+        function responseHandler(res) {
+          $.each(res.rows, function (i, row) {
+            row.state = $.inArray(row.houseId, selections) !== -1;
+          });
+          return res;
+        }
+
+        function detailFormatter(index, row) {
+          var html = [];
+          $.each(row, function (key, value) {
+            html.push("<p><b>" + key + ":</b> " + value + "</p>");
+          });
+          return html.join("");
+        }
+
+        window.operateEvents = {
+          "click .like": function (e, value, row, index) {
+            alert("You click like action, row: " + JSON.stringify(row));
+          },
+          "click .remove": function (e, value, row, index) {
+            $table.bootstrapTable("remove", {
+              field: "houseId",
+              values: [row.houseId],
+            });
+          },
+        };
+
+        function initTable() {
+          function create_data_columns(data) {
+            data_columns = [
+              {
+                field: "state",
+                checkbox: true,
+                align: "center",
+                valign: "middle",
+              }
+            ];
+
+            Object.keys(data).forEach(function(key) {
+              data_columns.push(
+                {
+                  title: "House ID",
+                  field: key,
+                  align: "center",
+                  valign: "middle",
+                  sortable: true,
+                }
+              );
+            });
+
+          }
+
+          //   for (let i = 0; i < data.length; i++) {
+          //     data_columns.push(
+          //       {
+          //           title: "House ID",
+          //           field: "houseId",
+          //           align: "center",
+          //           valign: "middle",
+          //           sortable: true,
+          //       }
+          //     )
+          //   }
+          // }
+
+          $table.bootstrapTable("destroy").bootstrapTable({
+            height: 550,
+            locale: $("#locale").val(),
+            columns: [
+              [
+                {
+                    field: "state",
+                    checkbox: true,
+                    align: "center",
+                    valign: "middle",
+                },
+                {
+                    title: "House ID",
+                    field: "house_id",
+                    align: "center",
+                    valign: "middle",
+                    sortable: true,
+                },
+                {
+                    title: "Address",
+                    field: "address",
+                    sortable: true,
+                    align: "center",
+                },
+                {
+                    title: "Address City",
+                    field: "address_city",
+                    sortable: true,
+                    align: "center",
+                },
+                {
+                    title: "Address State",
+                    field: "address_state",
+                    sortable: true,
+                    align: "center",
+                },
+                {
+                    title: "Address Street",
+                    field: "address_street",
+                    sortable: true,
+                    align: "center",
+                },
+                {
+                    title: "Address Zip Code",
+                    field: "address_zipcode",
+                    sortable: true,
+                    align: "center",
+                },
+                {
+                    title: "Baths",
+                    field: "baths",
+                    sortable: true,
+                    align: "center",
+                },
+                {
+                    title: "Beds",
+                    field: "beds",
+                    sortable: true,
+                    align: "center",
+                },
+                {
+                    title: "Detail URL",
+                    field: "detail_url",
+                    sortable: true,
+                    align: "center",
+                },
+                {
+                    title: "Home Status",
+                    field: "home_status",
+                    sortable: true,
+                    align: "center",
+                },
+                {
+                    title: "Home type",
+                    field: "home_type",
+                    sortable: true,
+                    align: "center",
+                },
+                {
+                    title: "Img Scr",
+                    field: "img_src",
+                    sortable: true,
+                    align: "center",
+                },
+                {
+                    title: "Is Zillow Owned",
+                    field: "is_zillow_owned",
+                    sortable: true,
+                    align: "center",
+                },
+                {
+                    title: "Latitude",
+                    field: "latitude",
+                    sortable: true,
+                    align: "center",
+                },
+                {
+                    title: "Longitude",
+                    field: "longitude",
+                    sortable: true,
+                    align: "center",
+                },
+                {
+                    title: "Lot Area Unit",
+                    field: "lot_area_unit",
+                    sortable: true,
+                    align: "center",
+                },
+                {
+                    title: "Price",
+                    field: "price",
+                    sortable: true,
+                    align: "center",
+                },
+                {
+                    title: "Rent Zestimate",
+                    field: "rent_zestimate",
+                    sortable: true,
+                    align: "center",
+                },
+                {
+                    title: "Sgapt",
+                    field: "sgapt",
+                    sortable: true,
+                    align: "center",
+                }
+              ],
+            ],
+          });
+          
+          $table.on(
+            "check.bs.table uncheck.bs.table " +
+              "check-all.bs.table uncheck-all.bs.table",
+            function () {
+              $remove.prop(
+                "disabled",
+                !$table.bootstrapTable("getSelections").length
+              );
+
+              // save your data, here just save the current page
+              selections = getIdSelections();
+              // push or splice the selections if you want to save all data selections
+            }
+          );
+
+          $table.on("all.bs.table", function (e, name, args) {
+            console.log(name, args);
+          });
+
+          $remove.click(function () {
+            var ids = getIdSelections();
+            $table.bootstrapTable("remove", {
+              field: "houseId",
+              values: ids,
+            });
+            $remove.prop("disabled", true);
+          });
+        }
+
+        $(function () {
+          initTable();
+
+          $("#locale").change(initTable);
+        });
+      </script> -->
+
+    </div>
+  </body>
+</html>
